@@ -1,26 +1,34 @@
-const express = require('express');
-const mongoose = require('mongoose')
-require('dotenv').config();
-const userRoute=require("./routers/UserRoute")
-const app = express()
+import express from "express";
+import dotenv from "dotenv";
+import conn from "./db.js";
+import cookieParser from "cookie-parser";
+import methodOverride from "method-override";
+import { v2 as cloudinary } from 'cloudinary';
+import fileUpload from "express-fileupload";
+import AuthRoute from "./routers/AuthRoute.js";
 
-//Mongodb Bağlantısı
-mongoose.set('strictQuery', true);
-mongoose.connect(process.env.MONGODB_URL).then(() => {
-   console.log('DB Connected Successfuly');
-});
+const app = express();
+const port = process.env.PORT || 5000;
+
+dotenv.config();
+//Connection to the db
+conn();
 
 //Middlewares
-app.use(express.static('public'));
-app.use(express.json()); //body'den gelen verileri yakalamak için kullanılır
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+pp.use(cookieParser());
+app.use(fileUpload({ useTempFiles: true }));
+app.use(
+  methodOverride('_method', {
+    methods: ['POST', 'GET'],
+  })
+);
 
 //Routers
-app.use("/users",userRoute)
-
+app.use("/Auth", AuthRoute);
 
 //Sunucuyu Başlattık
-const port = process.env.PORT || 5000;
-app.listen(port, ()=>{
-console.log(`App started on port ${port}`)
-})
+app.listen(port, () => {
+  console.log(`App started on port ${port}`);
+});

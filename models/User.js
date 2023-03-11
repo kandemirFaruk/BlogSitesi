@@ -1,11 +1,12 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const bcrypt = require("bcrypt");
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
   username: {
     type: String,
     required: true,
+    trim: true,
   },
   email: {
     type: String,
@@ -15,6 +16,11 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
+    trim: true,
+  },
+  imgUrl: {
+    type: String,
+    trim: true,
   },
 });
 
@@ -25,5 +31,5 @@ userSchema.pre("save", function (next) {
     next();
   });
 });
-const User = mongoose.model('User',userSchema)
-module.exports=User;
+const User = mongoose.model("User", userSchema);
+export default User;
